@@ -401,6 +401,11 @@
 
         return `
         <div class="flex min-h-[48px] w-full flex-col items-start justify-center pt-2 gap-1">
+        ${!question.isCorrect.base ? `
+                <p class="text-sm font-medium text-red-600 dark:text-red-500">
+                    Base Form correcto: ${verb.base}
+                </p>
+            ` : ''}
             ${!question.isCorrect.pastSimple ? `
                 <p class="text-sm font-medium text-red-600 dark:text-red-500">
                     Past Simple correcto: ${verb.pastSimple}
