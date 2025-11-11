@@ -1,0 +1,13 @@
+# Configuración de IDE (JetBrains, VSCode, etc.)
+.idea/
+.vscode/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de dependencias (por si los usas en el futuro)
+node_modules/
+
+# Archivos de entorno (contraseñas, llaves de API, etc.)
+.env
