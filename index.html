@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Practica Verbos Irregulares en Inglés</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#488fe5",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111821",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: max(884px, 100dvh);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div id="app"></div>
+
+<script>
+    const VERBS = [
+        {"base": "be", "pastSimple": "was/were", "pastParticiple": "been", "translation": "ser/estar"},
+        {"base": "become", "pastSimple": "became", "pastParticiple": "become", "translation": "convertirse"},
+        {"base": "begin", "pastSimple": "began", "pastParticiple": "begun", "translation": "comenzar"},
+        {"base": "break", "pastSimple": "broke", "pastParticiple": "broken", "translation": "romper"},
+        {"base": "bring", "pastSimple": "brought", "pastParticiple": "brought", "translation": "traer"},
+        {"base": "build", "pastSimple": "built", "pastParticiple": "built", "translation": "construir"},
+        {"base": "buy", "pastSimple": "bought", "pastParticiple": "bought", "translation": "comprar"},
+        {"base": "catch", "pastSimple": "caught", "pastParticiple": "caught", "translation": "atrapar"},
+        {"base": "choose", "pastSimple": "chose", "pastParticiple": "chosen", "translation": "elegir"},
+        {"base": "come", "pastSimple": "came", "pastParticiple": "come", "translation": "venir"},
+        {"base": "cost", "pastSimple": "cost", "pastParticiple": "cost", "translation": "costar"},
+        {"base": "cut", "pastSimple": "cut", "pastParticiple": "cut", "translation": "cortar"},
+        {"base": "do", "pastSimple": "did", "pastParticiple": "done", "translation": "hacer"},
+        {"base": "draw", "pastSimple": "drew", "pastParticiple": "drawn", "translation": "dibujar"},
+        {"base": "dream", "pastSimple": "dreamed/dreamt", "pastParticiple": "dreamed/dreamt", "translation": "soñar"},
+        {"base": "drink", "pastSimple": "drank", "pastParticiple": "drunk", "translation": "beber"},
+        {"base": "drive", "pastSimple": "drove", "pastParticiple": "driven", "translation": "conducir"},
+        {"base": "eat", "pastSimple": "ate", "pastParticiple": "eaten", "translation": "comer"},
+        {"base": "fall", "pastSimple": "fell", "pastParticiple": "fallen", "translation": "caer"},
+        {"base": "feed", "pastSimple": "fed", "pastParticiple": "fed", "translation": "alimentar"},
+        {"base": "feel", "pastSimple": "felt", "pastParticiple": "felt", "translation": "sentir"},
+        {"base": "fight", "pastSimple": "fought", "pastParticiple": "fought", "translation": "pelear"},
+        {"base": "find", "pastSimple": "found", "pastParticiple": "found", "translation": "encontrar"},
+        {"base": "fit", "pastSimple": "fit", "pastParticiple": "fit", "translation": "encajar"},
+        {"base": "fly", "pastSimple": "flew", "pastParticiple": "flown", "translation": "volar"},
+        {"base": "forget", "pastSimple": "forgot", "pastParticiple": "forgotten", "translation": "olvidar"},
+        {"base": "get", "pastSimple": "got", "pastParticiple": "gotten", "translation": "obtener"},
+        {"base": "give", "pastSimple": "gave", "pastParticiple": "given", "translation": "dar"},
+        {"base": "go", "pastSimple": "went", "pastParticiple": "gone", "translation": "ir"},
+        {"base": "grow", "pastSimple": "grew", "pastParticiple": "grown", "translation": "crecer"},
+        {"base": "have", "pastSimple": "had", "pastParticiple": "had", "translation": "tener"},
+        {"base": "hear", "pastSimple": "heard", "pastParticiple": "heard", "translation": "oir"},
+        {"base": "hit", "pastSimple": "hit", "pastParticiple": "hit", "translation": "golpear"},
+        {"base": "hold", "pastSimple": "held", "pastParticiple": "held", "translation": "sostener"},
+        {"base": "hurt", "pastSimple": "hurt", "pastParticiple": "hurt", "translation": "herir"},
+        {"base": "keep", "pastSimple": "kept", "pastParticiple": "kept", "translation": "mantener"},
+        {"base": "know", "pastSimple": "knew", "pastParticiple": "known", "translation": "saber"},
+        {"base": "leave", "pastSimple": "left", "pastParticiple": "left", "translation": "dejar/irse"},
+        {"base": "let", "pastSimple": "let", "pastParticiple": "let", "translation": "permitir/dejar"},
+        {"base": "lose", "pastSimple": "lost", "pastParticiple": "lost", "translation": "perder"},
+        {"base": "make", "pastSimple": "made", "pastParticiple": "made", "translation": "hacer/fabricar"},
+        {"base": "mean", "pastSimple": "meant", "pastParticiple": "meant", "translation": "significar"},
+        {"base": "meet", "pastSimple": "met", "pastParticiple": "met", "translation": "conocer/reunirse"},
+        {"base": "pay", "pastSimple": "paid", "pastParticiple": "paid", "translation": "pagar"},
+        {"base": "put", "pastSimple": "put", "pastParticiple": "put", "translation": "poner"},
+        {"base": "quit", "pastSimple": "quit", "pastParticiple": "quit", "translation": "renunciar/dejar"},
+        {"base": "read", "pastSimple": "read", "pastParticiple": "read", "translation": "leer"},
+        {"base": "ride", "pastSimple": "rode", "pastParticiple": "ridden", "translation": "montar"},
+        {"base": "ring", "pastSimple": "rang", "pastParticiple": "rung", "translation": "sonar/llamar"},
+        {"base": "rise", "pastSimple": "rose", "pastParticiple": "risen", "translation": "levantarse"},
+        {"base": "run", "pastSimple": "ran", "pastParticiple": "run", "translation": "correr"},
+        {"base": "say", "pastSimple": "said", "pastParticiple": "said", "translation": "decir"},
+        {"base": "see", "pastSimple": "saw", "pastParticiple": "seen", "translation": "ver"},
+        {"base": "sell", "pastSimple": "sold", "pastParticiple": "sold", "translation": "vender"},
+        {"base": "send", "pastSimple": "sent", "pastParticiple": "sent", "translation": "enviar"},
+        {"base": "shake", "pastSimple": "shook", "pastParticiple": "shaken", "translation": "sacudir"},
+        {"base": "sing", "pastSimple": "sang", "pastParticiple": "sung", "translation": "cantar"},
+        {"base": "sit", "pastSimple": "sat", "pastParticiple": "sat", "translation": "sentarse"},
+        {"base": "sleep", "pastSimple": "slept", "pastParticiple": "slept", "translation": "dormir"},
+        {"base": "speak", "pastSimple": "spoke", "pastParticiple": "spoken", "translation": "hablar"},
+        {"base": "spend", "pastSimple": "spent", "pastParticiple": "spent", "translation": "gastar/pasar"},
+        {"base": "stand", "pastSimple": "stood", "pastParticiple": "stood", "translation": "estar de pie"},
+        {"base": "steal", "pastSimple": "stole", "pastParticiple": "stolen", "translation": "robar"},
+        {"base": "swim", "pastSimple": "swam", "pastParticiple": "swum", "translation": "nadar"},
+        {"base": "take", "pastSimple": "took", "pastParticiple": "taken", "translation": "tomar"},
+        {"base": "teach", "pastSimple": "taught", "pastParticiple": "taught", "translation": "enseñar"},
+        {"base": "tell", "pastSimple": "told", "pastParticiple": "told", "translation": "decir/contar"},
+        {"base": "think", "pastSimple": "thought", "pastParticiple": "thought", "translation": "pensar"},
+        {"base": "throw", "pastSimple": "threw", "pastParticiple": "thrown", "translation": "lanzar"},
+        {"base": "understand", "pastSimple": "understood", "pastParticiple": "understood", "translation": "entender"},
+        {"base": "wake up", "pastSimple": "woke up", "pastParticiple": "woken up", "translation": "despertarse"},
+        {"base": "wear", "pastSimple": "wore", "pastParticiple": "worn", "translation": "usar/vestir"},
+        {"base": "win", "pastSimple": "won", "pastParticiple": "won", "translation": "ganar"},
+        {"base": "write", "pastSimple": "wrote", "pastParticiple": "written", "translation": "escribir"}
+    ];
+
+    // Estado de la aplicación
+    let state = {
+        screen: 'landing', // landing, quiz, results, review
+        score: 0,
+        currentQuestionIndex: 0,
+        questions: [],
+        answers: [],
+        checked: false,
+        darkMode: false
+    };
+
+    // Inicializar
+    function init() {
+        toggleDarkMode();
+        render();
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+        const html = document.documentElement;
+        if (state.darkMode) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+    }
+
+    // Generar preguntas aleatorias
+    function generateQuestions(count = 20) {
+        const shuffled = [...VERBS].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count).map(verb => ({
+            verb,
+            userAnswers: {base: '', pastSimple: '', pastParticiple: ''},
+            isCorrect: {base: null, pastSimple: null, pastParticiple: null}
+        }));
+    }
+
+    // Comparar respuestas (soporta múltiples formas como was/were)
+    function compareAnswer(userAnswer, correctAnswer) {
+        const normalize = str => str.toLowerCase().trim();
+        const user = normalize(userAnswer);
+        const correct = normalize(correctAnswer);
+
+        // Si la respuesta correcta tiene múltiples opciones separadas por /
+        if (correct.includes('/')) {
+            const options = correct.split('/').map(opt => normalize(opt));
+            return options.some(opt => user === opt);
+        }
+
+        return user === correct;
+    }
+
+    // Verificar respuestas
+    function checkAnswers() {
+        const question = state.questions[state.currentQuestionIndex];
+        const verb = question.verb;
+
+        question.isCorrect.base = compareAnswer(question.userAnswers.base, verb.base);
+        question.isCorrect.pastSimple = compareAnswer(question.userAnswers.pastSimple, verb.pastSimple);
+        question.isCorrect.pastParticiple = compareAnswer(question.userAnswers.pastParticiple, verb.pastParticiple);
+
+        state.checked = true;
+        render();
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+        if (state.currentQuestionIndex < state.questions.length - 1) {
+            state.currentQuestionIndex++;
+            state.checked = false;
+            render();
+        } else {
+            // Calcular resultados
+            calculateResults();
+            state.screen = 'results';
+            render();
+        }
+    }
+
+    // Calcular resultados
+    function calculateResults() {
+        let correct = 0;
+        let total = 0;
+
+        state.questions.forEach(q => {
+            Object.values(q.isCorrect).forEach(isCorrect => {
+                total++;
+                if (isCorrect) correct++;
+            });
+        });
+
+        state.score = Math.round((correct / total) * 100);
+        state.answers = state.questions.filter(q =>
+            !q.isCorrect.base || !q.isCorrect.pastSimple || !q.isCorrect.pastParticiple
+        );
+    }
+
+    // Comenzar práctica
+    function startPractice() {
+        state.questions = generateQuestions(20);
+        state.currentQuestionIndex = 0;
+        state.checked = false;
+        state.screen = 'quiz';
+        render();
+    }
+
+    // Practicar solo errores
+    function practiceErrors() {
+        if (state.answers.length === 0) return;
+        state.questions = state.answers.map(q => ({
+            verb: q.verb,
+            userAnswers: {base: '', pastSimple: '', pastParticiple: ''},
+            isCorrect: {base: null, pastSimple: null, pastParticiple: null}
+        }));
+        state.currentQuestionIndex = 0;
+        state.checked = false;
+        state.screen = 'quiz';
+        render();
+    }
+
+    // Renderizar
+    function render() {
+        const app = document.getElementById('app');
+
+        if (state.screen === 'landing') {
+            app.innerHTML = renderLanding();
+        } else if (state.screen === 'quiz') {
+            app.innerHTML = renderQuiz();
+        } else if (state.screen === 'results') {
+            app.innerHTML = renderResults();
+        } else if (state.screen === 'review') {
+            app.innerHTML = renderReview();
+        }
+
+        attachEventListeners();
+    }
+
+    function renderLanding() {
+        return `
+        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="flex flex-1 items-center justify-center p-4">
+                <div class="w-full max-w-2xl text-center">
+                    <div class="flex flex-col items-center gap-6 fade-in">
+                        <div class="flex items-center justify-center w-20 h-20 bg-primary/20 rounded-2xl text-primary">
+                            <span class="material-symbols-outlined text-5xl">school</span>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <h1 class="text-4xl font-black leading-tight tracking-tighter text-gray-900 dark:text-white md:text-5xl">
+                                ¡Domina los Verbos Irregulares!
+                            </h1>
+                            <h2 class="text-base font-normal leading-normal text-gray-600 dark:text-gray-400">
+                                Aprende y memoriza los ${VERBS.length} verbos más importantes del inglés de forma fácil y efectiva.
+                            </h2>
+                        </div>
+                        <button onclick="startPractice()" class="flex min-w-[84px] max-w-md w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-wide transition-colors hover:bg-primary/90">
+                            <span class="truncate">Empezar a Practicar</span>
+                        </button>
+                        <button onclick="toggleDarkModeBtn()" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary">
+                            <span class="material-symbols-outlined align-middle">dark_mode</span> Cambiar tema
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    }
+
+    function renderQuiz() {
+        const question = state.questions[state.currentQuestionIndex];
+        const verb = question.verb;
+        const progress = ((state.currentQuestionIndex + 1) / state.questions.length) * 100;
+
+        return `
+        <div class="relative flex min-h-screen w-full flex-col items-center justify-start p-4 pt-6 md:justify-center md:pt-4">
+            <div class="fixed top-0 left-0 right-0 flex w-full max-w-2xl mx-auto items-center bg-background-light dark:bg-background-dark p-4 justify-between z-10">
+                <div class="flex size-8 shrink-0 items-center justify-center text-[#111417] dark:text-background-light">
+                    <span class="material-symbols-outlined text-3xl">school</span>
+                </div>
+                <div class="flex items-center justify-end gap-4">
+                    <p class="text-[#647487] dark:text-gray-400 text-sm font-medium">
+                        ${state.currentQuestionIndex + 1}/${state.questions.length}
+                    </p>
+                    <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary transition-all duration-300" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            </div>
+
+<main class="w-full max-w-md pt-28 md:pt-24 fade-in">
+                <div class="flex w-full flex-col items-center gap-4 rounded-xl bg-white dark:bg-background-dark dark:border dark:border-gray-700 p-6 shadow-lg">
+                    <h3 class="text-[#111417] dark:text-background-light tracking-light text-xl font-bold text-center">
+                        Completa las formas del verbo:
+                    </h3>
+                    <h1 class="text-[#111417] dark:text-background-light tracking-light text-5xl font-bold leading-tight text-center pt-2 pb-4">
+                        ${verb.translation.charAt(0).toUpperCase() + verb.translation.slice(1)}
+                    </h1>
+
+                    <div class="flex w-full flex-col gap-5">
+                        ${renderInput('base', 'Base Form', verb.base, question)}
+                        ${renderInput('pastSimple', 'Past Simple', verb.pastSimple, question)}
+                        ${renderInput('pastParticiple', 'Past Participle', verb.pastParticiple, question)}
+                    </div>
+
+                    <div class="flex w-full flex-col items-center gap-4 pt-4">
+                        ${!state.checked ? `
+                            <button onclick="checkAnswers()" class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm transition-all hover:bg-primary/90">
+                                Comprobar
+                            </button>
+                        ` : `
+                            <button onclick="nextQuestion()" class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm transition-all hover:bg-primary/90">
+                                ${state.currentQuestionIndex < state.questions.length - 1 ? 'Siguiente' : 'Ver Resultados'}
+                            </button>
+                        `}
+                    </div>
+
+                    ${state.checked ? renderFeedback(question) : '<div class="min-h-[48px]"></div>'}
+                </div>
+            </main>
+        </div>
+    `;
+    }
+
+    function renderInput(field, label, correctAnswer, question) {
+        const value = question.userAnswers[field];
+        const isCorrect = question.isCorrect[field];
+        const checked = state.checked;
+
+        let borderClass = 'border-[#dce0e5] dark:border-gray-600';
+        let ringClass = '';
+
+        if (checked) {
+            if (isCorrect) {
+                borderClass = 'border-green-500 dark:border-green-500';
+                ringClass = 'ring-2 ring-green-500/20';
+            } else {
+                borderClass = 'border-red-500 dark:border-red-500';
+                ringClass = 'ring-2 ring-red-500/20';
+            }
+        }
+
+        return `
+        <label class="flex w-full flex-col">
+            <p class="text-[#111417] dark:text-gray-300 text-base font-medium leading-normal pb-2">${label}</p>
+            <input
+                type="text"
+                data-field="${field}"
+                value="${value}"
+                ${checked ? 'disabled' : ''}
+                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111417] dark:text-white dark:bg-gray-800 focus:outline-0 focus:ring-2 focus:ring-primary/50 border ${borderClass} bg-white focus:border-primary h-14 placeholder:text-[#647487] p-[15px] text-base font-normal leading-normal ${ringClass} ${checked ? 'cursor-not-allowed opacity-75' : ''}"
+                placeholder="Write here"
+            />
+        </label>
+    `;
+    }
+
+    function renderFeedback(question) {
+        const allCorrect = question.isCorrect.base && question.isCorrect.pastSimple && question.isCorrect.pastParticiple;
+        const verb = question.verb;
+
+        if (allCorrect) {
+            return `
+            <div class="flex min-h-[48px] w-full flex-col items-center justify-center pt-2 text-center">
+                <p class="text-base font-medium text-green-600 dark:text-green-500">¡Correcto! 🎉</p>
+            </div>
+        `;
+        }
+
+        return `
+        <div class="flex min-h-[48px] w-full flex-col items-start justify-center pt-2 gap-1">
+            ${!question.isCorrect.pastSimple ? `
+                <p class="text-sm font-medium text-red-600 dark:text-red-500">
+                    Past Simple correcto: ${verb.pastSimple}
+                </p>
+            ` : ''}
+            ${!question.isCorrect.pastParticiple ? `
+                <p class="text-sm font-medium text-red-600 dark:text-red-500">
+                    Past Participle correcto: ${verb.pastParticiple}
+                </p>
+            ` : ''}
+        </div>
+    `;
+    }
+
+    function renderResults() {
+        const totalQuestions = state.questions.length;
+        const correctCount = state.questions.filter(q =>
+            q.isCorrect.base && q.isCorrect.pastSimple && q.isCorrect.pastParticiple
+        ).length;
+        const incorrectCount = totalQuestions - correctCount;
+        const percentage = Math.round((correctCount / totalQuestions) * 100);
+        const circumference = 2 * Math.PI * 52;
+        const dashOffset = circumference * (1 - percentage / 100);
+
+        return `
+        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden fade-in">
+            <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+                <div class="flex size-12 shrink-0 items-center justify-start">
+                    <button onclick="goToLanding()" class="flex items-center justify-center rounded-full h-10 w-10 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span class="material-symbols-outlined text-2xl text-[#111417] dark:text-gray-200">close</span>
+                    </button>
+                </div>
+                <h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center text-[#111417] dark:text-gray-200">
+                    Resultados de la Sesión
+                </h2>
+                <div class="flex w-12 items-center justify-end"></div>
+            </div>
+
+            <div class="p-4">
+                <h1 class="text-[#111417] dark:text-white tracking-tight text-[32px] font-bold leading-tight text-center pb-2 pt-4">
+                    ${percentage >= 80 ? '¡Excelente!' : percentage >= 60 ? '¡Buen Trabajo!' : '¡Sigue Practicando!'}
+                </h1>
+                <p class="text-center text-base font-normal leading-normal text-gray-600 dark:text-gray-400">
+                    ${percentage >= 80 ? '¡Dominas los verbos irregulares!' : '¡Sigue así!'}
+                </p>
+            </div>
+
+            <div class="p-4">
+                <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                    <div class="relative mx-auto mb-6 flex h-40 w-40 items-center justify-center">
+                        <svg class="absolute inset-0 h-full w-full -rotate-90 transform" viewbox="0 0 120 120">
+                            <circle class="text-gray-200 dark:text-gray-700" cx="60" cy="60" fill="transparent" r="52" stroke="currentColor" stroke-width="10"></circle>
+                            <circle class="text-primary transition-all duration-1000" cx="60" cy="60" fill="transparent" r="52" stroke="currentColor" stroke-linecap="round" stroke-width="10" style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${dashOffset};"></circle>
+                        </svg>
+                        <div class="flex flex-col items-center justify-center">
+                            <span class="text-3xl font-bold text-[#111417] dark:text-white">${percentage}%</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Puntuación</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex min-w-[140px] flex-1 items-center gap-4 rounded-lg bg-green-500/10 dark:bg-green-500/20 p-4">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20 dark:bg-green-500/30">
+                                <span class="material-symbols-outlined text-green-600 dark:text-green-400">check</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-base font-medium leading-normal text-[#111417] dark:text-gray-200">Correctas</p>
+                                <p class="tracking-light text-2xl font-bold leading-tight text-[#111417] dark:text-white">${correctCount}</p>
+                            </div>
+                        </div>
+                        <div class="flex min-w-[140px] flex-1 items-center gap-4 rounded-lg bg-red-500/10 dark:bg-red-500/20 p-4">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20 dark:bg-red-500/30">
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400">close</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-base font-medium leading-normal text-[#111417] dark:text-gray-200">Incorrectas</p>
+                                <p class="tracking-light text-2xl font-bold leading-tight text-[#111417] dark:text-white">${incorrectCount}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 p-4">
+                <h3 class="text-lg font-bold text-[#111417] dark:text-white">Resumen de Verbos</h3>
+                <ul class="flex flex-col gap-2">
+                    ${state.questions.map(q => {
+            const isCorrect = q.isCorrect.base && q.isCorrect.pastSimple && q.isCorrect.pastParticiple;
+            return `
+                            <li class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+                                <span class="text-base font-medium text-[#111417] dark:text-gray-200">${q.verb.base.charAt(0).toUpperCase() + q.verb.base.slice(1)}</span>
+                                <span class="material-symbols-outlined text-${isCorrect ? 'green' : 'red'}-500 dark:text-${isCorrect ? 'green' : 'red'}-400">
+                                    ${isCorrect ? 'check_circle' : 'cancel'}
+                                </span>
+                            </li>
+                        `;
+        }).join('')}
+                </ul>
+            </div>
+
+            <div class="sticky bottom-0 mt-auto flex flex-col gap-3 bg-background-light dark:bg-background-dark p-4 pt-2 border-t border-gray-200 dark:border-gray-800">
+                ${incorrectCount > 0 ? `
+                    <button onclick="goToReview()" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-primary text-white gap-2 px-5 text-base font-bold leading-normal tracking-[0.015em]">
+                        Revisar Errores
+                    </button>
+                ` : ''}
+                <button onclick="startPractice()" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-primary/20 dark:bg-primary/30 text-primary dark:text-blue-300 gap-2 px-5 text-base font-bold leading-normal tracking-[0.015em]">
+                    Volver a Practicar
+                </button>
+            </div>
+        </div>
+    `;
+    }
+
+    function renderReview() {
+        const incorrectQuestions = state.answers;
+
+        if (incorrectQuestions.length === 0) {
+            return `
+            <div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden fade-in">
+                <div class="sticky top-0 z-10 flex items-center justify-between border-b border-b-gray-200 dark:border-b-gray-800 bg-background-light dark:bg-background-dark p-4">
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer" onclick="state.screen='results'; render();">
+                        <span class="material-symbols-outlined text-[#111417] dark:text-gray-200">arrow_back</span>
+                    </div>
+                    <h1 class="flex-1 text-center text-lg font-bold tracking-[-0.015em] text-[#111417] dark:text-gray-100">Revisa tus Errores</h1>
+                    <div class="w-10"></div>
+                </div>
+                <div class="text-center py-16 px-4">
+                    <span class="material-symbols-outlined text-6xl text-green-500 mx-auto">celebration</span>
+                    <h3 class="text-lg font-bold mt-4 text-[#111417] dark:text-gray-100">¡Felicidades!</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mt-1">No cometiste ningún error en la última sesión.</p>
+                </div>
+            </div>
+        `;
+        }
+
+        return `
+        <div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden fade-in">
+            <div class="sticky top-0 z-10 flex items-center justify-between border-b border-b-gray-200 dark:border-b-gray-800 bg-background-light dark:bg-background-dark p-4">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer" onclick="state.screen='results'; render();">
+                    <span class="material-symbols-outlined text-[#111417] dark:text-gray-200">arrow_back</span>
+                </div>
+                <h1 class="flex-1 text-center text-lg font-bold tracking-[-0.015em] text-[#111417] dark:text-gray-100">Revisa tus Errores</h1>
+                <div class="w-10"></div>
+            </div>
+            <main class="flex flex-1 flex-col pb-24">
+                <p class="px-4 pt-6 pb-4 text-base font-normal leading-normal text-gray-700 dark:text-gray-300">
+                    Aquí están los verbos en los que fallaste. ¡Repásalos para mejorar!
+                </p>
+                <div class="flex flex-col gap-3 px-4">
+                    ${incorrectQuestions.map(q => {
+            const verb = q.verb;
+            return `
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark p-4 shadow-sm">
+                                <p class="text-base font-bold text-primary dark:text-primary/90 mb-3">${verb.base.toUpperCase()}</p>
+                                <div class="flex flex-col gap-2 text-sm">
+                                    ${!q.isCorrect.pastSimple ? `
+                                        <div class="flex items-start">
+                                            <span class="material-symbols-outlined text-red-500 mr-2 mt-px">cancel</span>
+                                            <p class="text-gray-800 dark:text-gray-200">
+                                                Tu respuesta: <span class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 font-medium rounded px-1 py-0.5">${q.userAnswers.pastSimple || '(vacío)'}</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="material-symbols-outlined text-green-500 mr-2 mt-px">check_circle</span>
+                                            <p class="text-gray-800 dark:text-gray-200">
+                                                Correcta: <span class="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 font-medium rounded px-1 py-0.5">${verb.pastSimple}</span>
+                                            </p>
+                                        </div>
+                                    ` : ''}
+                                    ${!q.isCorrect.pastParticiple ? `
+                                        <div class="flex items-start">
+                                            <span class="material-symbols-outlined text-red-500 mr-2 mt-px">cancel</span>
+                                            <p class="text-gray-800 dark:text-gray-200">
+                                                Tu respuesta: <span class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 font-medium rounded px-1 py-0.5">${q.userAnswers.pastParticiple || '(vacío)'}</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="material-symbols-outlined text-green-500 mr-2 mt-px">check_circle</span>
+                                            <p class="text-gray-800 dark:text-gray-200">
+                                                Correcta: <span class="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 font-medium rounded px-1 py-0.5">${verb.pastParticiple}</span>
+                                            </p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+        }).join('')}
+                </div>
+            </main>
+
+            <div class="fixed bottom-0 left-0 right-0 border-t border-t-gray-200 dark:border-t-gray-800 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm">
+                <div class="mx-auto flex max-w-[480px] flex-col items-stretch gap-3 p-4">
+                    <button onclick="practiceErrors()" class="flex h-12 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-base font-bold leading-normal tracking-[0.015em] text-white shadow-lg shadow-primary/30 transition-transform duration-200 active:scale-95">
+                        <span class="truncate">Practicar estos ${incorrectQuestions.length} verbos</span>
+                    </button>
+                    <button onclick="startPractice()" class="flex h-12 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-gray-200/70 dark:bg-gray-800 px-5 text-base font-bold leading-normal tracking-[0.015em] text-[#111417] dark:text-gray-200 transition-transform duration-200 active:scale-95">
+                        <span class="truncate">Volver a la práctica</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    }
+
+    function attachEventListeners() {
+        // Listeners para los inputs del quiz
+        if (state.screen === 'quiz' && !state.checked) {
+            const inputs = document.querySelectorAll('input[data-field]');
+            inputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const field = e.target.dataset.field;
+                    state.questions[state.currentQuestionIndex].userAnswers[field] = e.target.value;
+                });
+
+                // Permitir Enter para comprobar
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        checkAnswers();
+                    }
+                });
+            });
+        }
+    }
+
+    // Funciones auxiliares para navegación
+    function goToLanding() {
+        state.screen = 'landing';
+        state.currentQuestionIndex = 0;
+        state.checked = false;
+        render();
+    }
+
+    function goToReview() {
+        state.screen = 'review';
+        render();
+    }
+
+    function toggleDarkModeBtn() {
+        state.darkMode = !state.darkMode;
+        toggleDarkMode();
+        render();
+    }
+
+    // Iniciar la app
+    init();
+</script>
+</body>
+</html>
